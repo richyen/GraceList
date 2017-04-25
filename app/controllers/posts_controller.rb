@@ -1,6 +1,15 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :destroy]
 
+  def index
+    @category = Category.find(params[:category_id])
+    if @category
+      @posts = Post.in_category(@category).most_recent.paginate(page: params[:page], per_page: 20)
+    else
+      redirect_to category_path, alert: 'Please provide a valid category.'
+    end
+  end
+
   # GET /posts/1
   # GET /posts/1.json
   def show
